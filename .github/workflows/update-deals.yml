@@ -1,0 +1,33 @@
+name: Generate Daily Dummy Deals
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Runs every day at 2 AM UTC
+  workflow_dispatch:      # Allows manual trigger
+
+jobs:
+  generate-deals:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies (if needed)
+        run: npm install
+
+      - name: Run script to generate today's deals
+        run: node scripts/fetchDeals.js
+
+      - name: Commit and push
+        run: |
+          git config --global user.name "daily-deals-bot"
+          git config --global user.email "actions@github.com"
+          git add public/deals/*.json
+          git commit -m "Add daily deals for $(date +'%Y-%m-%d')" || echo "No changes to commit"
+          git push
