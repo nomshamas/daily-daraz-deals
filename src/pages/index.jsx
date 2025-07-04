@@ -3,35 +3,67 @@ import DealCard from '../components/DealCard'
 
 const IndexPage = () => {
   const [deals, setDeals] = useState([])
+  const [filteredDeals, setFilteredDeals] = useState([])
+  const [categories, setCategories] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState('All')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10)
     fetch(`/deals/${today}.json`)
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         setDeals(data)
+        setFilteredDeals(data)
+        const uniqueCats = ['All', ...new Set(data.map(d => d.category))]
+        setCategories(uniqueCats)
         setLoading(false)
       })
-      .catch((err) => {
+      .catch(err => {
         console.error('Failed to load deals:', err)
         setLoading(false)
       })
   }, [])
 
+  const handleCategoryChange = (cat) => {
+    setSelectedCategory(cat)
+    if (cat === 'All') {
+      setFilteredDeals(deals)
+    } else {
+      setFilteredDeals(deals.filter(d => d.category === cat))
+    }
+  }
+
   return (
     <main className="p-4 max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold mb-4 text-center">🔥 Today’s Daraz Deals</h1>
+
+      <div className="flex flex-wrap justify-center gap-2 mb-6">
+        {categories.map(cat => (
+          <button
+            key={cat}
+            onClick={() => handleCategoryChange(cat)}
+            className={`px-4 py-2 rounded-full border text-sm ${
+              selectedCategory === cat
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-gray-600 border-gray-300'
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
       {loading ? (
         <p className="text-center">Loading...</p>
-      ) : deals.length ? (
+      ) : filteredDeals.length ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {deals.map((deal, index) => (
+          {filteredDeals.map((deal, index) => (
             <DealCard key={index} deal={deal} />
           ))}
         </div>
       ) : (
-        <p className="text-center">No deals found for today.</p>
+        <p className="text-center">No deals found.</p>
       )}
     </main>
   )
