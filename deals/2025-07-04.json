@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Mi Wireless Earbuds",
+    "image": "https://example.com/earbuds.jpg",
+    "price": 2199,
+    "originalPrice": 3499,
+    "category": "Audio",
+    "link": "https://www.daraz.pk/products/earbuds-example"
+  },
+  {
+    "title": "Samsung 64GB MicroSD Card",
+    "image": "https://example.com/sdcard.jpg",
+    "price": 1199,
+    "originalPrice": 1899,
+    "category": "Storage",
+    "link": "https://www.daraz.pk/products/sdcard-example"
+  }
+]
