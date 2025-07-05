@@ -30,4 +30,7 @@ jobs:
           git config --global user.email "actions@github.com"
           git add public/deals/*.json
           git commit -m "Add daily deals for $(date +'%Y-%m-%d')" || echo "No changes to commit"
+          git remote set-url origin https://x-access-token:${GIT_AUTH_TOKEN}@github.com/nomshamas/daily-daraz-deals.git
           git push
+        env:
+          GIT_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
