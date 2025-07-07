@@ -1,30 +1,31 @@
+import axios from 'axios'
 import fs from 'fs'
 import path from 'path'
 
-// Generate today's date filename
 const today = new Date().toISOString().slice(0, 10)
 const filePath = path.join('public', 'deals', `${today}.json`)
 
-// Dummy deal generator
-const deals = [
-  {
-    title: 'Mi Wireless Earbuds',
-    image: 'https://example.com/earbuds.jpg',
-    price: 2199,
-    originalPrice: 3499,
-    category: 'Audio',
-    link: 'https://www.daraz.pk/products/earbuds-example'
-  },
-  {
-    title: 'Samsung 64GB MicroSD Card',
-    image: 'https://example.com/sdcard.jpg',
-    price: 1199,
-    originalPrice: 1899,
-    category: 'Storage',
-    link: 'https://www.daraz.pk/products/sdcard-example'
-  }
-]
+async function fetchDummyDeals() {
+  try {
+    const { data } = await axios.get(
+      'https://dummyjson.com/products?limit=10&select=title,price,category,thumbnail,discountPercentage'
+    )
 
-// Write JSON file
-fs.writeFileSync(filePath, JSON.stringify(deals, null, 2))
-console.log(`✅ Created daily deals at ${filePath}`)
+    const deals = data.products.map((product) => ({
+      title: product.title,
+      price: product.price,
+      originalPrice: Math.round(product.price * (1 + product.discountPercentage / 100)),
+      image: product.thumbnail,
+      category: product.category,
+      link: `https://dummyjson.com/product/${product.id}`
+    }))
+
+    if (!fs.existsSync('public/deals')) fs.mkdirSync('public/deals', { recursive: true })
+    fs.writeFileSync(filePath, JSON.stringify(deals, null, 2))
+    console.log(`✅ Dummy deals saved: ${filePath}`)
+  } catch (err) {
+    console.error('❌ Failed to fetch dummy deals:', err.message)
+  }
+}
+
+fetchDummyDeals()

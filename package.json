@@ -1,4 +1,5 @@
 {
+  "homepage": "https://github.com/nomshamas/daily-daraz-deals",
   "name": "daily-daraz-deals",
   "private": true,
   "version": "0.0.0",
@@ -13,6 +14,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.11",
+    "axios": "^1.10.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
