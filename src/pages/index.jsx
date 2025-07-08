@@ -10,9 +10,15 @@ const IndexPage = () => {
 
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10)
-    fetch(`/deals/${today}.json`)
-      .then(res => res.json())
+    const baseUrl = import.meta.env.BASE_URL || ''
+
+    fetch(`${baseUrl}deals/${today}.json`)
+      .then(res => {
+        if (!res.ok) throw new Error('JSON not found')
+        return res.json()
+      })
       .then(data => {
+        console.log('Deals fetched:', data)
         setDeals(data)
         setFilteredDeals(data)
         const uniqueCats = ['All', ...new Set(data.map(d => d.category))]
@@ -21,9 +27,13 @@ const IndexPage = () => {
       })
       .catch(err => {
         console.error('Failed to load deals:', err)
+        setDeals([])
+        setFilteredDeals([])
+        setCategories(['All'])
         setLoading(false)
       })
   }, [])
+
 
   const handleCategoryChange = (cat) => {
     setSelectedCategory(cat)
