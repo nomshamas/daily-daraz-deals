@@ -10,14 +10,14 @@ const IndexPage = () => {
 
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10)
-    const baseUrl = import.meta.env.BASE_URL || ''
+    const base = '/daily-daraz-deals' // your GitHub repo folder name
 
-    fetch(`${baseUrl}deals/${today}.json`)
-      .then(res => {
+    fetch(`${base}/deals/${today}.json`)
+      .then((res) => {
         if (!res.ok) throw new Error('JSON not found')
         return res.json()
       })
-      .then(data => {
+      .then((data) => {
         console.log('Deals fetched:', data)
         setDeals(data)
         setFilteredDeals(data)
@@ -33,7 +33,6 @@ const IndexPage = () => {
         setLoading(false)
       })
   }, [])
-
 
   const handleCategoryChange = (cat) => {
     setSelectedCategory(cat)
